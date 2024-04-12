@@ -1,0 +1,271 @@
+   
+2:  #include<iostream>  
+3:  #include<vector>  
+4:  #include<stdio.h>  
+5:  #include<cstring>  
+6:  #include<fstream>  
+7:  #include<algorithm>  
+8:  using namespace std;  
+9:  class student  
+10:  {  
+11:       public:  
+12:            long int reg;  
+13:            char name[80],branch[50];  
+14:            void input()  
+15:            {  
+16:                 cout<<"n Enter name: ";  
+17:                 gets(name);  
+18:                 cout<<"n Enter roll no: ";  
+19:                 cin>>reg;  
+20:                 fflush(stdin);  
+21:                 cout<<"n Enter Branch: ";  
+22:                 gets(branch);  
+23:            }  
+24:            void display()  
+25:            {  
+26:                 system("CLS");  
+27:                 cout<<"ttDisplay Records";  
+28:                 cout<<"n";  
+29:                 cout<<"n Name - "<<name;  
+30:                 cout<<"n Reg no. - "<<reg;  
+31:                 cout<<"n Branch - "<<branch;  
+32:                 cout<<"n";  
+33:                 system("PAUSE");  
+34:                 system("CLS");  
+35:            }  
+36:            bool operator == (student a)  
+37:            {  
+38:                 if(reg==a.reg)  
+39:                      return true;  
+40:                 else  
+41:                      return false;  
+42:            }  
+43:  };  
+44:  vector <student>v;  
+45:  int search_reg(long int reg,int &i);  
+46:  void get_file()  
+47:  {  
+48:       student x;  
+49:       int i=0;  
+50:       fstream f;  
+51:       f.open("College.txt",ios::in);  
+52:       if(f)  
+53:       {  
+54:            f.read((char *) &x,sizeof(class student));  
+55:            while(!f.eof())  
+56:            {  
+57:                 v.push_back(x);  
+58:                 f.read((char *) &x,sizeof(class student));  
+59:            }  
+60:       }  
+61:       else  
+62:            ;  
+63:       f.close();  
+64:  }  
+65:  void bubblesort()  
+66:  {  
+67:       int i,j;  
+68:       student x;  
+69:       for(i=0;i<v.size();i++)  
+70:            for(j=0;j<v.size()-i-1;j++)  
+71:                 if(v[j].reg>v[j+1].reg)  
+72:                 {  
+73:                      x=v[j];  
+74:                      v[j]=v[j+1];  
+75:                      v[j+1]=x;  
+76:                 }       
+77:  }  
+78:  void insert_new()  
+79:  {  
+80:       char ch='y';  
+81:       int ta;  
+82:       while(ch=='y')  
+83:       {  
+84:            fflush(stdin);  
+85:            student x;  
+86:            x.input();  
+87:            if(search_reg(x.reg,ta)==0)  
+88:                 v.push_back(x);  
+89:            else  
+90:                 cout<<"nTHE REGISTRATION NO. ALREADY EXIST!!!nCANNOT ADD";  
+91:            cout<<"n Press [Y] to enter more: ";  
+92:            cin>>ch;  
+93:            fflush(stdin);  
+94:       }  
+95:  }  
+96:  void write_file()  
+97:  {  
+98:       bubblesort();  
+99:       fstream f;  
+100:       f.open("College.txt",ios::out);  
+101:       for(int i=0;i<v.size();i++)  
+102:       {  
+103:            student x=v[i];  
+104:            f.write((char *) &x,sizeof(class student));  
+105:       }  
+106:       f.close();  
+107:  }  
+108:  int search_reg(long int reg,int &i)  
+109:  {  
+110:       int ta=0;  
+111:       for(i=0;i<v.size();i++)  
+112:            if(v[i].reg==reg)  
+113:            {  
+114:                 ta=1;  
+115:                 break;  
+116:            }  
+117:       return ta;  
+118:  }  
+119:  int search_name(char name[],vector<int> &vi)  
+120:  {  
+121:       int i,ta=0;  
+122:       for(i=0;i<v.size();i++)  
+123:            if(strcmp(v[i].name,name)==0)  
+124:            {  
+125:                 ta=1;  
+126:                 vi.push_back(i);  
+127:            }  
+128:       return ta;  
+129:  }  
+130:  int search_branch(char branch[],vector<int> &vj)  
+131:  {  
+132:       int i,ta=0;  
+133:       for(i=0;i<v.size();i++)  
+134:            if(strcmp(v[i].branch,branch)==0)  
+135:            {  
+136:                 ta=1;  
+137:                 vj.push_back(i);  
+138:            }  
+139:       return ta;  
+140:  }  
+141:  void search_and_show()  
+142:  {  
+143:       int ch,i,ta=0;  
+144:       char name[80],branch[50];  
+145:       vector <int>vi;   
+146:       vector <int>vj;  
+147:       long int reg;  
+148:       poi:  
+149:       cout<<"n1.Press to search reg no."  
+150:       <<"n2.Press to search name"  
+151:       <<"n3.Press to search branch";  
+152:       cin>>ch;  
+153:       switch(ch)  
+154:       {  
+155:            case 1:  
+156:                 cout<<"nEnter reg no.: ";  
+157:                 cin>>reg;  
+158:                 if(search_reg(reg,i)==1)  
+159:                      v[i].display();  
+160:                 else  
+161:                      cout<<"nRecord NOT FOUND!!!";  
+162:                 break;  
+163:            case 2:  
+164:                 cout<<"nEnter name: ";  
+165:                 fflush(stdin);  
+166:                 gets(name);  
+167:                 if(search_name(name,vi)==1)  
+168:                 {  
+169:                      for(int j=0;j<vi.size();j++)  
+170:                           v[vi[j]].display();  
+171:                 }  
+172:                 else  
+173:                      cout<<"nRecord NOT FOUND!!!";  
+174:                 break;  
+175:            case 3:  
+176:                 cout<<"nEnter branch: ";  
+177:                 fflush(stdin);  
+178:                 gets(branch);  
+179:                 if(search_branch(branch,vj)==1)  
+180:                 {  
+181:                      for(int j=0;j<vj.size();j++)  
+182:                           v[vj[j]].display();  
+183:                 }  
+184:                 else  
+185:                      cout<<"nRecord NOT FOUND!!!";  
+186:                 break;  
+187:            default:  
+188:                 cout<<"nWrong CHOICE!!!";  
+189:                 goto poi;  
+190:       }  
+191:  }  
+192:  void show()  
+193:  {  
+194:       int i;  
+195:       for(i=0;i<v.size();i++)  
+196:            v[i].display();  
+197:  }  
+198:  void delete_data()  
+199:  {  
+200:       int i,j;  
+201:       long int reg;  
+202:       vector <student>::iterator p=v.begin();  
+203:       cout<<"nEnter Reg. no.: ";  
+204:       cin>>reg;  
+205:       if(search_reg(reg,i)==1)  
+206:       {  
+207:            student x=v[i];  
+208:            cout<<"nThe following data is being deleted";  
+209:            x.display();  
+210:            p+=i;  
+211:            v.erase(p,p+1);  
+212:       }  
+213:  }  
+214:  void edit_data()  
+215:  {  
+216:       int i,j;  
+217:       long int reg;  
+218:       vector <student>vi;  
+219:       cout<<"nEnter Reg. no.: ";  
+220:       cin>>reg;  
+221:       if(search_reg(reg,i)==1)  
+222:       {  
+223:            cout<<"nEnter new data:";  
+224:            fflush(stdin);  
+225:            v[i].input();  
+226:       }  
+227:  }  
+228:  int main()  
+229:  {  
+230:       int i=1;  
+231:       get_file();  
+232:       while(i)  
+233:       {  
+234:            system("CLS");  
+235:            cout<<"ttt-----------------------------------------n";  
+236:            cout<<"ttt   Simple College Management Systemn";  
+237:            cout<<"ttt-----------------------------------------n";  
+238:            cout<<"ntttEnter <1> to Add new student"  
+239:                 <<"ntttEnter <2> to Display all student"  
+240:                 <<"ntttEnter <3> to Remove student"  
+241:                 <<"ntttEnter <4> to Edit student"  
+242:                 <<"ntttEnter <5> to Search student"  
+243:                 <<"ntttEnter <0> to Exitn";  
+244:            cout<<"nntttEnter Your Choice:";       
+245:            cin>>i;  
+246:            switch(i)  
+247:            {  
+248:                 case 1 :  
+249:                      insert_new();  
+250:                      break;  
+251:                 case 2 :  
+252:                      show();  
+253:                      break;  
+254:                 case 3 :  
+255:                      delete_data();  
+256:                      break;  
+257:                 case 4 :  
+258:                      edit_data();  
+259:                      break;  
+260:                 case 5 :  
+261:                      search_and_show();  
+262:                      break;  
+263:                 case 0 :  
+264:                      write_file();  
+265:                      break;  
+266:                 default :  
+267:                      cout<<"nWRONG CHOICE!!!nTRY AGAIN";  
+268:            }  
+269:       }  
+270:       return 0;  
+271:  }  
